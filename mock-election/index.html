@@ -1,0 +1,32 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mock Election | The Ward Four Daily</title>
+<meta name="description" content="Who gets your vote for Mayor of the County of Brant? The Ward Four Daily mock election. Informal, not an official ballot.">
+<meta property="og:title" content="The Ward Four Daily Mock Election"><meta property="og:image" content="https://w4d2026.github.io/img/card_issue10_og.png">
+<link rel="icon" href="/favicon.ico" sizes="any"><link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<style>*{box-sizing:border-box}body{margin:0;background:#F4F1E8;color:#15366B;font-family:system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif;line-height:1.45}
+header{background:#15366B;color:#fff;text-align:center;padding:14px 12px;border-bottom:6px solid #F2B84B}header img{height:56px;vertical-align:middle}header .mh{font-family:Georgia,serif;font-size:26px;font-weight:900}
+main{max-width:640px;margin:0 auto;padding:16px}h1{text-align:center;font-size:44px;margin:8px 0 0;letter-spacing:1px}.q{text-align:center;font-family:Georgia,serif;font-size:20px;color:#8a6a1a;margin:4px 0 16px}
+.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}@media(max-width:420px){.grid{grid-template-columns:1fr}}
+.c{min-height:84px;border:3px solid #E8A317;border-radius:14px;background:#fff;color:#15366B;font-size:20px;font-weight:800;cursor:pointer;padding:10px;box-shadow:0 4px 0 #8a6a1a}.c small{display:block;font-size:13px;letter-spacing:2px;color:#7a5a10}
+.c.sel{background:#15366B;color:#fff;border-color:#F2B84B}.c.sel small{color:#F2B84B}.c:disabled{cursor:default}
+#go{display:block;width:100%;margin:16px 0;padding:18px;font-size:22px;font-weight:900;border:0;border-radius:14px;background:#3B844C;color:#fff;cursor:pointer}#go:disabled{background:#9aa;cursor:default}
+#msg{text-align:center;font-size:18px;font-weight:700;min-height:1em}#msg.ok{color:#3B844C}#msg.err{color:#a02020}
+.fine{font-size:13px;color:#444;background:#fff;border-left:5px solid #F2B84B;padding:10px 12px;border-radius:6px}.links{text-align:center;margin:16px 0}.links a{color:#15366B;font-weight:700}</style></head><body>
+<header><img src="../img/logo.png" alt=""> <span class="mh">The Ward Four Daily</span></header>
+<main><h1>MOCK ELECTION</h1><p class="q">Who gets your vote for Mayor of the County of Brant?</p>
+<div class="grid" id="g"></div><button id="go" disabled>Pick a candidate</button><p id="msg" role="status"></p>
+<div class="fine"><b>Polls close at midnight Sunday, October 25, 2026. Results Monday, election day.</b><br>This mock election is informal and unscientific. It is not an official result and it is not a County ballot. One vote per device/browser. Candidates are listed alphabetically by last name. The Ward Four Daily is not endorsing anyone.<br>To vote for real, go to <a href="https://brant.simplyvoting.com">brant.simplyvoting.com</a> by 8 p.m. Monday, October 26.</div>
+<p class="links"><a href="https://w4d2026.github.io/issue10/">Read Issue 10</a> · <a href="https://www.facebook.com/thewardfourdaily">Follow the paper on Facebook</a></p></main>
+<script>
+const C=[["Stuart","Braid"],["Christine","Garneau Bisaillon"],["Kent","Hollett"],["Graham","Horner"],["Jennifer","Kyle"],["David","Swanson"]];
+const K="w4d_mock_mayor_vote_oct2026",g=document.getElementById("g"),go=document.getElementById("go"),msg=document.getElementById("msg");let pick=null;
+function say(t,c){msg.textContent=t;msg.className=c||""}
+C.forEach(([f,l])=>{const b=document.createElement("button");b.className="c";b.innerHTML="<small>"+f.toUpperCase()+"</small>"+l.toUpperCase();b.onclick=()=>{pick=f+" "+l;[...g.children].forEach(x=>x.classList.remove("sel"));b.classList.add("sel");go.disabled=false;go.textContent="Cast my vote for "+pick};b.dataset.n=f+" "+l;g.appendChild(b)});
+function lock(n){[...g.children].forEach(x=>{x.disabled=true;if(x.dataset.n===n)x.classList.add("sel")});go.disabled=true;go.textContent="Vote recorded";say("Thank you! Your vote for "+n+" is in.","ok")}
+const prev=localStorage.getItem(K);if(prev)lock(prev);
+go.onclick=async()=>{if(!pick||localStorage.getItem(K))return;go.disabled=true;go.textContent="Sending…";say("");
+try{const r=await fetch("https://formsubmit.co/ajax/yourvoicematterstomeward4@gmail.com",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({name:pick,vote:pick,_subject:"Ward Four Daily mock election vote",_template:"table",source:"w4d2026.github.io/mock-election"})});
+const d=await r.json().catch(()=>({}));const ok=r.ok&&(d.success===true||d.success==="true");
+if(ok){localStorage.setItem(K,pick);lock(pick)}else{const m=String(d.message||"");if(/activat|confirm/i.test(m))say("The ballot box is still being set up: the paper's inbox has to confirm it once. Please try again a little later.","err");else say("Your vote didn't go through"+(m?": "+m:"")+". Please try again.","err");go.disabled=false;go.textContent="Cast my vote for "+pick}}
+catch(e){say("Couldn't reach the ballot box. Check your connection and try again.","err");go.disabled=false;go.textContent="Cast my vote for "+pick}};
+</script></body></html>
