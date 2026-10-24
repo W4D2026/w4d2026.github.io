@@ -25,7 +25,7 @@ C.forEach(([f,l])=>{const b=document.createElement("button");b.className="c";b.i
 function lock(n){[...g.children].forEach(x=>{x.disabled=true;if(x.dataset.n===n)x.classList.add("sel")});go.disabled=true;go.textContent="Vote recorded";say("Thank you! Your vote for "+n+" is in.","ok")}
 const prev=localStorage.getItem(K);if(prev)lock(prev);
 go.onclick=async()=>{if(!pick||localStorage.getItem(K))return;go.disabled=true;go.textContent="Sending…";say("");
-try{const r=await fetch("https://formsubmit.co/ajax/yourvoicematterstomeward4@gmail.com",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({name:pick,vote:pick,_subject:"Ward Four Daily mock election vote",_template:"table",source:"w4d2026.github.io/mock-election"})});
+try{const r=await fetch("https://formsubmit.co/ajax/75e236aad3fb8b0cdef0e5f16e5f943d",{method:"POST",headers:{"Content-Type":"application/json","Accept":"application/json"},body:JSON.stringify({name:pick,vote:pick,_subject:"Ward Four Daily mock election vote",_template:"table",source:"w4d2026.github.io/mock-election"})});
 const d=await r.json().catch(()=>({}));const ok=r.ok&&(d.success===true||d.success==="true");
 if(ok){localStorage.setItem(K,pick);lock(pick)}else{const m=String(d.message||"");if(/activat|confirm/i.test(m))say("The ballot box is still being set up: the paper's inbox has to confirm it once. Please try again a little later.","err");else say("Your vote didn't go through"+(m?": "+m:"")+". Please try again.","err");go.disabled=false;go.textContent="Cast my vote for "+pick}}
 catch(e){say("Couldn't reach the ballot box. Check your connection and try again.","err");go.disabled=false;go.textContent="Cast my vote for "+pick}};
